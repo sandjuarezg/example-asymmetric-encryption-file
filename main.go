@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"strings"
+	"path/filepath"
 
 	"github.com/sandjuarezg/example-asymmetric-encryption-file/cryptography"
 	"github.com/sandjuarezg/example-asymmetric-encryption-file/functionality"
@@ -53,8 +53,7 @@ func main() {
 
 			fmt.Println()
 			for _, file := range files {
-				// filepath
-				if strings.HasSuffix(file.Name(), ".txt") {
+				if filepath.Ext(file.Name()) != ".encrypt" && filepath.Ext(file.Name()) != ".decrypt" {
 					fmt.Println(file.Name())
 				}
 			}
@@ -83,7 +82,7 @@ func main() {
 
 			fmt.Println()
 			for _, file := range files {
-				if strings.HasSuffix(file.Name(), ".encrypt") {
+				if filepath.Ext(file.Name()) == ".encrypt" {
 					fmt.Println(file.Name())
 				}
 			}
