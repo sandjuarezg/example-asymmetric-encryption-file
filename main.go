@@ -8,13 +8,24 @@ import (
 	"strings"
 
 	"github.com/sandjuarezg/example-asymmetric-encryption-file/cryptography"
+	"github.com/sandjuarezg/example-asymmetric-encryption-file/functionality"
 )
 
 func main() {
 	var flag bool
 	var opc int
 
-	err := cryptography.GenerateKeysFiles()
+	err := functionality.PreparePathDir()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	err = functionality.CreateSamplesFiles()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	err = cryptography.GenerateKeysFiles()
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -40,9 +51,11 @@ func main() {
 				log.Fatal(err)
 			}
 
-			for i, file := range files {
+			fmt.Println()
+			for _, file := range files {
+				// filepath
 				if strings.HasSuffix(file.Name(), ".txt") {
-					fmt.Printf("%d. %s\n", i+1, file.Name())
+					fmt.Println(file.Name())
 				}
 			}
 
@@ -57,7 +70,9 @@ func main() {
 				log.Fatal(err)
 			}
 
-			fmt.Println("Encryption file created")
+			fmt.Println()
+			fmt.Println("- Encryption file created -")
+			fmt.Println()
 
 		case 2:
 
@@ -66,24 +81,27 @@ func main() {
 				log.Fatal(err)
 			}
 
+			fmt.Println()
 			for _, file := range files {
 				if strings.HasSuffix(file.Name(), ".encrypt") {
-					fmt.Println("File name:", file.Name())
+					fmt.Println(file.Name())
 				}
 			}
 
-			fmt.Println("Enter name file")
+			fmt.Printf("Enter name file: ")
 			filename, _, err := bufio.NewReader(os.Stdin).ReadLine()
 			if err != nil {
 				log.Fatal(err)
 			}
 
-			content, err := cryptography.DecryptFile(string(filename))
+			err = cryptography.DecryptFile(string(filename))
 			if err != nil {
 				log.Fatal(err)
 			}
 
-			fmt.Println("Decryption file:", string(content))
+			fmt.Println()
+			fmt.Println("- Decryption file created -")
+			fmt.Println()
 
 		}
 
