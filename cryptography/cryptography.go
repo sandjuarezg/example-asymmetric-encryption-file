@@ -15,7 +15,7 @@ var (
 )
 
 func existKeysFiles() (err error) {
-	_, err = os.Stat("./keys/key_priv.txt")
+	_, err = os.Stat("./keys/key.priv")
 	if err != nil {
 		return
 	}
