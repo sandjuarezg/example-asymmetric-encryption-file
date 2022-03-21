@@ -11,8 +11,16 @@ import (
 	"strings"
 )
 
+// existKeysFiles Check existence of key files
+//
+//  @return1 (err): error variable
 func existKeysFiles() (err error) {
 	_, err = os.Stat("./keys/key.priv")
+	if err != nil {
+		return
+	}
+
+	_, err = os.Stat("./keys/key.pub")
 	if err != nil {
 		return
 	}
@@ -20,7 +28,11 @@ func existKeysFiles() (err error) {
 	return
 }
 
-func getPublicKey() (publicKey *rsa.PublicKey, err error) {
+// getPublicKeyFromFile Get file public key
+//
+//  @return1 (publicKey): public key
+//  @return2 (err): error variable
+func getPublicKeyFromFile() (publicKey *rsa.PublicKey, err error) {
 	content, err := os.ReadFile("./keys/key.pub")
 	if err != nil {
 		return
@@ -34,7 +46,11 @@ func getPublicKey() (publicKey *rsa.PublicKey, err error) {
 	return
 }
 
-func getPrivateKey() (privateKey *rsa.PrivateKey, err error) {
+// getPrivateKeyFromFile Get file private key
+//
+//  @return1 (privateKey): private key
+//  @return2 (err): error variable
+func getPrivateKeyFromFile() (privateKey *rsa.PrivateKey, err error) {
 	content, err := os.ReadFile("./keys/key.priv")
 	if err != nil {
 		return
@@ -48,7 +64,10 @@ func getPrivateKey() (privateKey *rsa.PrivateKey, err error) {
 	return
 }
 
-func GenerateKeysFiles() (err error) {
+// CreateKeysFiles Create files for keys
+//
+//  @return1 (err): error variable
+func CreateKeysFiles() (err error) {
 	err = existKeysFiles()
 	if !os.IsNotExist(err) {
 		return
@@ -80,13 +99,19 @@ func GenerateKeysFiles() (err error) {
 	return
 }
 
+// EncryptFile Encrypt file
+//  @param1 (filename): name of file
+//  @param2 (hash): hash function
+//  @param3 (label): label to context to the message
+//
+//  @return1 (err): error variable
 func EncryptFile(filename string, hash hash.Hash, label []byte) (err error) {
 	content, err := os.ReadFile(fmt.Sprintf("./files/%s", filename))
 	if err != nil {
 		return
 	}
 
-	publicKey, err := getPublicKey()
+	publicKey, err := getPublicKeyFromFile()
 	if err != nil {
 		return
 	}
@@ -104,13 +129,19 @@ func EncryptFile(filename string, hash hash.Hash, label []byte) (err error) {
 	return
 }
 
+// DecryptFile Decrypt file
+//  @param1 (filename): name of file
+//  @param2 (hash): hash function
+//  @param3 (label): label to the message
+//
+//  @return1 (err): error variable
 func DecryptFile(filename string, hash hash.Hash, label []byte) (err error) {
 	content, err := os.ReadFile(fmt.Sprintf("./files/%s", filename))
 	if err != nil {
 		return
 	}
 
-	privateKey, err := getPrivateKey()
+	privateKey, err := getPrivateKeyFromFile()
 	if err != nil {
 		return
 	}

@@ -19,7 +19,7 @@ func main() {
 	var flag bool
 	var opc int
 
-	err := functionality.PreparePathDir()
+	err := functionality.CreateDirPath()
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -29,7 +29,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	err = cryptography.GenerateKeysFiles()
+	err = cryptography.CreateKeysFiles()
 	if err != nil {
 		log.Fatal(err)
 	}
