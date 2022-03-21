@@ -15,7 +15,10 @@ import (
 	"github.com/sandjuarezg/example-asymmetric-encryption-file/functionality"
 )
 
-func init() {
+func main() {
+	var flag bool
+	var opc int
+
 	err := functionality.CreateDirPath()
 	if err != nil {
 		log.Fatal(err)
@@ -30,11 +33,6 @@ func init() {
 	if err != nil {
 		log.Fatal(err)
 	}
-}
-
-func main() {
-	var flag bool
-	var opc int
 
 	for !flag {
 
