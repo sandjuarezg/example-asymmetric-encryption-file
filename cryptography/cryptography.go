@@ -3,9 +3,10 @@ package cryptography
 import (
 	"crypto/rand"
 	"crypto/rsa"
-	"crypto/sha256"
 	"crypto/x509"
+	"errors"
 	"fmt"
+	"hash"
 	"os"
 	"strings"
 )
@@ -79,7 +80,7 @@ func GenerateKeysFiles() (err error) {
 	return
 }
 
-func EncryptFile(filename string) (err error) {
+func EncryptFile(filename string, hash hash.Hash, label []byte) (err error) {
 	content, err := os.ReadFile(fmt.Sprintf("./files/%s", filename))
 	if err != nil {
 		return
@@ -90,7 +91,7 @@ func EncryptFile(filename string) (err error) {
 		return
 	}
 
-	encrypt, err := rsa.EncryptOAEP(sha256.New(), rand.Reader, publicKey, content, nil)
+	encrypt, err := rsa.EncryptOAEP(hash, rand.Reader, publicKey, content, label)
 	if err != nil {
 		return
 	}
@@ -103,7 +104,7 @@ func EncryptFile(filename string) (err error) {
 	return
 }
 
-func DecryptFile(filename string) (err error) {
+func DecryptFile(filename string, hash hash.Hash, label []byte) (err error) {
 	content, err := os.ReadFile(fmt.Sprintf("./files/%s", filename))
 	if err != nil {
 		return
@@ -114,8 +115,12 @@ func DecryptFile(filename string) (err error) {
 		return
 	}
 
-	decrypt, err := rsa.DecryptOAEP(sha256.New(), rand.Reader, privateKey, content, nil)
+	decrypt, err := rsa.DecryptOAEP(hash, rand.Reader, privateKey, content, label)
 	if err != nil {
+		if err == rsa.ErrDecryption {
+			err = errors.New("data doesn't match to decrypt")
+		}
+
 		return
 	}
 

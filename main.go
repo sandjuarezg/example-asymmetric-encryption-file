@@ -2,7 +2,11 @@ package main
 
 import (
 	"bufio"
+	"crypto/sha1"
+	"crypto/sha256"
+	"crypto/sha512"
 	"fmt"
+	"hash"
 	"log"
 	"os"
 	"path/filepath"
@@ -60,13 +64,40 @@ func main() {
 				}
 			}
 
-			var filename string
-			fmt.Print("Enter name file: ")
-			fmt.Scan(&filename)
+			var (
+				filename string
+				hashAux  string
+				hash     hash.Hash
+				label    string
+			)
 
-			err = cryptography.EncryptFile(string(filename))
+			fmt.Println()
+			fmt.Println("< Enter to skip >")
+			fmt.Print("Enter name file: ")
+			fmt.Scanln(&filename)
+			fmt.Print("Enter hash (sha1, sha256, sha512): ")
+			fmt.Scanln(&hashAux)
+			fmt.Print("Enter label: ")
+			fmt.Scanln(&label)
+
+			switch hashAux {
+			case "sha1":
+				hash = sha1.New()
+			case "sha256":
+				hash = sha256.New()
+			case "sha512":
+				hash = sha512.New()
+			default:
+
+				log.Println("hash no found")
+				continue
+
+			}
+
+			err = cryptography.EncryptFile(filename, hash, []byte(label))
 			if err != nil {
-				log.Fatal(err)
+				log.Println(err)
+				continue
 			}
 
 			fmt.Println()
@@ -88,13 +119,38 @@ func main() {
 				}
 			}
 
-			var filename string
-			fmt.Print("Enter name file: ")
-			fmt.Scan(&filename)
+			var (
+				filename string
+				hashAux  string
+				hash     hash.Hash
+				label    string
+			)
 
-			err = cryptography.DecryptFile(string(filename))
+			fmt.Println()
+			fmt.Println("< Enter to skip >")
+			fmt.Print("Enter name file: ")
+			fmt.Scanln(&filename)
+			fmt.Print("Enter hash (sha1, sha256, sha512): ")
+			fmt.Scanln(&hashAux)
+			fmt.Print("Enter label: ")
+			fmt.Scanln(&label)
+
+			switch hashAux {
+			case "sha1":
+				hash = sha1.New()
+			case "sha256":
+				hash = sha256.New()
+			case "sha512":
+				hash = sha512.New()
+			default:
+				log.Println("hash no found")
+				continue
+			}
+
+			err = cryptography.DecryptFile(filename, hash, []byte(label))
 			if err != nil {
-				log.Fatal(err)
+				log.Println(err)
+				continue
 			}
 
 			fmt.Println()
@@ -103,22 +159,22 @@ func main() {
 
 		case 3:
 
-			fmt.Println()
-			fmt.Print("Enter file name: ")
-
 			var filename string
+			fmt.Println()
 			fmt.Print("Enter name file: ")
-			fmt.Scan(&filename)
+			fmt.Scanln(&filename)
 
 			fmt.Print("Enter text: ")
 			content, _, err := bufio.NewReader(os.Stdin).ReadLine()
 			if err != nil {
-				log.Fatal(err)
+				log.Println(err)
+				continue
 			}
 
 			err = functionality.CreateFile(filename, string(content))
 			if err != nil {
-				log.Fatal(err)
+				log.Println(err)
+				continue
 			}
 
 			fmt.Println()
