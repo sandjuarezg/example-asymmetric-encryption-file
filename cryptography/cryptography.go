@@ -13,17 +13,19 @@ import (
 
 // existKeysFiles Check existence of key files
 //
-//  @return1 (err): error variable
-func existKeysFiles() (err error) {
-	_, err = os.Stat("./keys/key.priv")
-	if err != nil {
+//  @return1 (exist): file existence
+func existKeysFiles() (exist bool) {
+	_, err := os.Stat("./keys/key.priv")
+	if os.IsNotExist(err) {
 		return
 	}
 
 	_, err = os.Stat("./keys/key.pub")
-	if err != nil {
+	if os.IsNotExist(err) {
 		return
 	}
+
+	exist = true
 
 	return
 }
@@ -68,8 +70,8 @@ func getPrivateKeyFromFile() (privateKey *rsa.PrivateKey, err error) {
 //
 //  @return1 (err): error variable
 func CreateKeysFiles() (err error) {
-	err = existKeysFiles()
-	if !os.IsNotExist(err) {
+	exist := existKeysFiles()
+	if exist {
 		return
 	}
 
