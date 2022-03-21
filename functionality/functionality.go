@@ -1,7 +1,6 @@
 package functionality
 
 import (
-	"fmt"
 	"os"
 )
 
@@ -32,20 +31,6 @@ func CreateSamplesFiles() (err error) {
 	}
 
 	err = os.WriteFile("./files/hello.txt", []byte("Hellooooooow"), 0600)
-	if err != nil {
-		return
-	}
-
-	return
-}
-
-// CreateFile Create a new file with content
-//  @param1 (filename): name of file
-//  @param2 (content): content of file
-//
-//  @return1 (err): error variable
-func CreateFile(filename string, content string) (err error) {
-	err = os.WriteFile(fmt.Sprintf("./files/%s", filename), []byte(content), 0600)
 	if err != nil {
 		return
 	}
