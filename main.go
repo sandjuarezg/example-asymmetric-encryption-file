@@ -38,6 +38,7 @@ func main() {
 		fmt.Println("0. Exit")
 		fmt.Println("1. Encrypt")
 		fmt.Println("2. Decrypt")
+		fmt.Println("3. Create file")
 		fmt.Scanln(&opc)
 
 		switch opc {
@@ -52,17 +53,16 @@ func main() {
 			}
 
 			fmt.Println()
+
 			for _, file := range files {
 				if filepath.Ext(file.Name()) != ".encrypt" && filepath.Ext(file.Name()) != ".decrypt" {
 					fmt.Println(file.Name())
 				}
 			}
 
+			var filename string
 			fmt.Print("Enter name file: ")
-			filename, _, err := bufio.NewReader(os.Stdin).ReadLine()
-			if err != nil {
-				log.Fatal(err)
-			}
+			fmt.Scan(&filename)
 
 			err = cryptography.EncryptFile(string(filename))
 			if err != nil {
@@ -81,17 +81,16 @@ func main() {
 			}
 
 			fmt.Println()
+
 			for _, file := range files {
 				if filepath.Ext(file.Name()) == ".encrypt" {
 					fmt.Println(file.Name())
 				}
 			}
 
-			fmt.Printf("Enter name file: ")
-			filename, _, err := bufio.NewReader(os.Stdin).ReadLine()
-			if err != nil {
-				log.Fatal(err)
-			}
+			var filename string
+			fmt.Print("Enter name file: ")
+			fmt.Scan(&filename)
 
 			err = cryptography.DecryptFile(string(filename))
 			if err != nil {
@@ -100,6 +99,30 @@ func main() {
 
 			fmt.Println()
 			fmt.Println("- Decryption file created -")
+			fmt.Println()
+
+		case 3:
+
+			fmt.Println()
+			fmt.Print("Enter file name: ")
+
+			var filename string
+			fmt.Print("Enter name file: ")
+			fmt.Scan(&filename)
+
+			fmt.Print("Enter text: ")
+			content, _, err := bufio.NewReader(os.Stdin).ReadLine()
+			if err != nil {
+				log.Fatal(err)
+			}
+
+			err = functionality.CreateFile(filename, string(content))
+			if err != nil {
+				log.Fatal(err)
+			}
+
+			fmt.Println()
+			fmt.Println("- File created -")
 			fmt.Println()
 
 		}
